@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventController {
 
     @RequestMapping("/storeEvent")
-    public String storeEvent(@RequestParam(value = "departure") String eventType) {
+    public String storeEvent(@RequestParam(value = "eventType") String eventType) {
 
         /*
         Event Type 1 = departure
