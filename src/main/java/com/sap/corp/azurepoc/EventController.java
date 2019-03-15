@@ -1,23 +1,38 @@
 package com.sap.corp.azurepoc;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@RestController
+import java.util.Optional;
+
+@Controller
+@RequestMapping(path="/events")
 public class EventController {
 
-    @RequestMapping("/storeEvent")
-    public String storeEvent(@RequestParam(value = "eventType") String eventType) {
+    @Autowired
+    private EventRepository eventRepository;
 
-        /*
-        Event Type 1 = departure
-        Event Type 2 = arrival
-
-        Business Partner 1 = Bosch
-        Business Partner 2 = Daimler
-         */
-        return "eventType " + eventType;
+    @PostMapping
+    public @ResponseBody String createEvent(@RequestBody Event event) {
+        eventRepository.save(event);
+        return String.format("Added %s", event);
     }
 
+
+    @GetMapping
+    public @ResponseBody Iterable<Event> getAllEvents() {
+        return eventRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public @ResponseBody Optional<Event> getEvent(@PathVariable Integer id) {
+        return Optional.ofNullable(eventRepository.findById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public @ResponseBody String deleteEvent(@PathVariable Integer id) {
+        eventRepository.deleteById(id);
+        return "Deleted " + id;
+    }
 }
